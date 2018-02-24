@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Toast;
 
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPriceTextView = (TextView) findViewById(R.id.priceLabel);
-        Spinner spinner = (Spinner) findViewById(R.id.currency_spinner);
+        mPriceTextView = findViewById(R.id.priceLabel);
+        Spinner spinner = findViewById(R.id.currency_spinner);
 
         // Create an ArrayAdapter using the String array and a spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -76,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // called when response HTTP status is "200 OK"
                 Log.d("Bitcoin", "JSON: " + response.toString());
-//                WeatherDataModel weatherData = WeatherDataModel.fromJson(response);
 
+                // parse JSON to get the price of bitcoin. Because parsing JCON could fail,
+                // wrap it in try-catch block.
                 try {
                     String price = response.getString("last");
                     updateUI(price);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return;
                 }
             }
 
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Bitcoin", "Request fail! Status code: " + statusCode);
                 Log.d("Bitcoin", "Fail response: " + response);
                 Log.e("ERROR", e.toString());
-//                Toast.makeText(WeatherController.this, "Request Failed", Toast.LENGTH_SHORT).show();
             }
         });
 
